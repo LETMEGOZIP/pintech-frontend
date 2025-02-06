@@ -65,6 +65,8 @@ const StyledForm =styled.form`
     
     svg{
       font-size: ${big};
+      margin: 0;
+      padding: 0;
     }
   }
   
@@ -106,40 +108,37 @@ const Header = () => {
               <FaHome />
             </Link>
           </div>
-          <Link href="/member/join">
-            <FaUserPlus /> 회원가입
-          </Link>
-          <Link href="/member/login">
-            <SlLogin /> 로그인
-          </Link>
+          <div className="right">
+            <a href="/member/join">
+              <FaUserPlus /> 회원가입
+            </a>
+            <a href="/member/login">
+              <SlLogin /> 로그인
+            </a>
+          </div>
         </div>
       </div>
       {/* site-top */}
       <div className="logo-search">
         <div className="layout-width">
-          <div className="left">
-            <Link href="/">
-              <Image src={logo} alt="로고" />
-            </Link>
-          </div>
+          <Link href="/" className="logo">
+            <Image src={logo} alt="로고" priority={true} />
+          </Link>
+
           <StyledForm method="GET" action="/board/search" autoComplete="off">
-            <input
-              type="text"
-              name="skey"
-              placeholder="검색어를 입력하세요"
-            />
+            <input type="text" name="skey" placeholder="검색어를 입력하세요" />
             <button type="submit">
-              <FaSearch/>
+              <FaSearch />
             </button>
           </StyledForm>
         </div>
       </div>
       {/* logo-search */}
       <StyledMenu>
-        <div className='layout-width'>
-          <Link href="#">메뉴1</Link>
-          <Link href="#">메뉴2</Link>
-          <Link href="#">메뉴3</Link>
+        <div className="layout-width">
+          <a href="#">메뉴1</a>
+          <a href="#">메뉴2</a>
+          <a href="#">메뉴3</a>
         </div>
       </StyledMenu>
     </StyledHeader>
