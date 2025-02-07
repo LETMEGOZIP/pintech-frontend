@@ -17,8 +17,6 @@ const commonStyle = css`
   padding: 0 10px;
 `
 
-
-
 // 입력 항목
 
 export const Input = styled.input`
