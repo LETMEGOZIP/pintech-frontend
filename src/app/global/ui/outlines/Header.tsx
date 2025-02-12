@@ -1,19 +1,16 @@
 'use client'
-import React from "react"
-import styled from "styled-components"
-import Link from "next/link";
-import Image from "next/image";
-import { SlLogin, SlLogout } from "react-icons/sl";
-import { FaUserPlus, FaSearch, FaHome } from "react-icons/fa";
-import colors from "../../styles/colors";
-import sizes from "../../styles/sizes";
+import React from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { styled } from 'styled-components'
+import { SlLogin } from 'react-icons/sl'
+import { FaUserPlus, FaHome, FaSearch } from 'react-icons/fa'
+import colors from '../../styles/colors'
+import sizes from '../../styles/sizes'
 import logo from '../../assets/images/logo.png'
-import useUser from "../../hooks/useUser";
-import { MdContactPage } from "react-icons/md";
 
-
-const { primary, light, dark, white } = colors
-const { small, normal, medium, big, extra } = sizes
+const { white, primary, light, dark } = colors
+const { medium, big } = sizes
 
 const StyledHeader = styled.header`
   .site-top {
@@ -28,24 +25,20 @@ const StyledHeader = styled.header`
         display: flex;
         align-items: center;
         height: 45px;
-        a{
-          line-height: 45px;
-        }
+
         a + a {
           margin-left: 10px;
         }
       }
-      
+
       svg {
         font-size: ${big};
-        padding: 0;
-        margin: 0;
       }
     }
   }
-  
-  .logo-search{
-    .layout-width{
+
+  .logo-search {
+    .layout-width {
       display: flex;
       justify-content: space-between;
       height: 150px;
@@ -53,31 +46,28 @@ const StyledHeader = styled.header`
     }
   }
 `
-
-const StyledForm =styled.form`
+const StyledForm = styled.form`
   width: 350px;
   display: flex;
   border: 5px solid ${dark};
-  
+
   button {
     width: 45px;
     background: ${dark};
     color: ${white};
     border: 0;
     cursor: pointer;
-    
-    svg{
+
+    svg {
       font-size: ${big};
-      margin: 0;
-      padding: 0;
     }
   }
-  
-  input{
+
+  input {
     flex-grow: 1;
     border: 0;
     padding: 10px;
-    font-size: ${medium}
+    font-size: ${medium};
   }
 `
 
@@ -87,24 +77,22 @@ const StyledMenu = styled.nav`
   .layout-width {
     display: flex;
     height: 50px;
-    line-height: 50px;
+
     a {
       color: ${light};
       font-size: ${medium};
       padding: 0 40px;
+      line-height: 50px;
 
-      &:hover, &.on{
+      &:hover,
+      &.on {
         background: ${dark};
-        border-radius: 5px;
       }
     }
   }
 `
 
 const Header = () => {
-  const { userInfo, isLogin } = useUser();
-  const email = userInfo?.email;
-  const name = userInfo?.name;
   return (
     <StyledHeader>
       <div className="site-top">
@@ -115,26 +103,12 @@ const Header = () => {
             </Link>
           </div>
           <div className="right">
-            {isLogin ? (
-                <>
-                  {name}({email})님,
-                  <a href="/mypage">
-                    <MdContactPage/> 마이페이지
-                  </a>
-                  <a href="/member/api/logout">
-                    <SlLogout/> 로그아웃
-                  </a>
-                </>
-              ) : (
-                <>
-                  <a href="/member/join">
-                    <FaUserPlus /> 회원가입
-                  </a>
-                  <a href="/member/login">
-                    <SlLogin /> 로그인
-                  </a>
-                </>
-              )}
+            <a href="/member/join">
+              <FaUserPlus /> 회원가입
+            </a>
+            <a href="/member/login">
+              <SlLogin /> 로그인
+            </a>
           </div>
         </div>
       </div>

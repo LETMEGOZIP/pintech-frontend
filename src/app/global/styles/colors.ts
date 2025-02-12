@@ -1,4 +1,3 @@
-
 const colors = {
   primary: '#0d6efd',
   secondary: '#6c757d',
@@ -10,7 +9,6 @@ const colors = {
   dark: '#212529',
   white: '#fff',
 }
-
 export const buttonColors = {
   primary: [colors.primary, colors.white],
   secondary: [colors.secondary, colors.white],
@@ -19,7 +17,6 @@ export const buttonColors = {
   warning: [colors.warning, colors.dark],
   info: [colors.info, colors.dark],
   light: [colors.light, colors.dark],
-  dark: [colors.light, colors.white]
+  dark: [colors.dark, colors.white],
 }
-
 export default colors

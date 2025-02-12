@@ -1,57 +1,56 @@
 'use server'
-import { redirect } from "next/navigation"
-import { format } from "date-fns"
-import { error } from "console"
-import { headers } from "next/headers"
-import { cookies } from "next/headers"
-import apiRequest from "@/app/global/libs/apiRequest"
-import { revalidatePath } from "next/cache"
+import { redirect, RedirectType } from 'next/navigation'
+import { format } from 'date-fns'
+import { cookies } from 'next/headers'
+import apiRequest from '@/app/global/libs/apiRequest'
+import Error from 'next/error'
+import { revalidatePath } from 'next/cache'
 
 /**
- * 회원가입처리
- * @param params 쿼리스트링값
- * @param formData 
+ * 회원가입 처리
+ * @param params : 쿼리스트링값
+ * @param formData
  */
-export const processJoin = async (params, formData:FormData) => {
+export const processJoin = async (params, formData: FormData) => {
   const redirectUrl = params?.redirectUrl ?? '/member/login'
-  
-  const form = {}
-  let errors = {}
+
+  const form: any = {}
+  let errors: any = {}
   let hasErrors = false
 
-  for (let[key, value] of formData.entries()){
-    if(key.includes("$ACTION")) continue
-
-    if(key==='birthDt' && value && value.trim()){
-      value = format(new Date(value), 'yyyy-MM-dd')
-    } 
-
-    if(['false', 'true'].includes(value)){
-      value = value === 'true'
+  for (const [key, value] of formData.entries()) {
+    if (key.includes('$ACTION')) continue
+    let _value: string | boolean = value.toString()
+    if (key === 'birthDt' && _value && _value.trim()) {
+      _value = format(new Date(_value), 'yyyy-MM-dd')
     }
 
-    form[key] = value
+    if (['false', 'true'].includes(_value)) {
+      _value = _value === 'true'
+    }
+
+    form[key] = _value
   }
 
-  console.log('form', form)
-
   // 필수 항목 검증 S
-
   const requiredFields = {
     email: '이메일을 입력하세요.',
     name: '이름을 입력하세요.',
     password: '비밀번호를 입력하세요.',
     confirmPassword: '비밀번호를 확인하세요.',
-    phoneNumber: '휴대폰 번호를 입력하세요.',
-    gender: '성별을 선택하세요',
-    birthDt: '생년월일을 선택하세요',
-    requiredTerms1: '이용 약관에 동의하셔야 합니다.',
-    requiredTerms2: '개인정보 처리 방침에 동의하셔야 합니다.',
-    requiredTerms3: '개인정보 수집 및 이용에 동의하셔야 합니다.',
+    phoneNumber: '휴대폰번호를 입력하세요.',
+    gender: '성별을 선택하세요.',
+    birthDt: '생년월일을 선택하세요.',
+    requiredTerms1: '이용약관에 동의 하셔야 합니다.',
+    requiredTerms2: '개인정보 처리방침에 동의 하셔야 합니다.',
+    requiredTerms3: '개인정보 수집 및 이용에 동의 하셔야 합니다.',
   }
 
   for (const [field, msg] of Object.entries(requiredFields)) {
-    if (!form[field] || (typeof form[field] === 'string' && !form[field].trim())) {
+    if (
+      !form[field] ||
+      (typeof form[field] === 'string' && !form[field].trim())
+    ) {
       errors[field] = errors[field] ?? []
       errors[field].push(msg)
       hasErrors = true
@@ -60,11 +59,7 @@ export const processJoin = async (params, formData:FormData) => {
 
   // 주소 항목 검증
   if (
-    !form.zipCode ||
-    !form.zipCode?.trim() ||
-    !form.address ||
-    !form.address?.trim()
-  ) {
+    !form.zipCode || !form.zipCode?.trim() || !form.address || !form.address?.trim()) {
     errors.address = errors.address ?? []
     errors.address.push('주소를 입력하세요.')
     hasErrors = true
@@ -116,79 +111,85 @@ export const processJoin = async (params, formData:FormData) => {
 export const processLogin = async (params, formData: FormData) => {
   const redirectUrl = params?.redirectUrl ?? '/'
 
-  let errors = {}
+  let errors: any= {}
   let hasErrors = false
 
   // 필수 항목 검증 S
-
-  const email = formData.get('email')
-  const password = formData.get('password')
-  if (!email || !email.trim()){
+  const email = formData.get('email')?.toString()
+  const password = formData.get('password')?.toString()
+  if (!email || !email.trim()) {
     errors.email = errors.email ?? []
-    errors.email.push("이메일을 입력하세요")
+    errors.email.push('이메일을 입력하세요.')
     hasErrors = true
   }
 
-  if(!password || !password.trim()){
+  if (!password || !password.trim()) {
     errors.password = errors.password ?? []
-    errors.password.push("비밀번호를 입력하세요")
+    errors.password.push('비밀번호를 입력하세요.')
     hasErrors = true
   }
 
   // 필수 항목 검증 E
 
   // 서버 요청 처리 S
-    if(!hasErrors){
-      const apiUrl = process.env.API_URL + "/member/login"
-      try{
-        const res = await fetch(apiUrl,{
-          method:"POST",
-          headers:{
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({email, password}),
+  if (!hasErrors) {
+    const apiUrl = process.env.API_URL + '/member/login'
+    try {
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const result = await res.json()
+      if (res.status === 200 && result.success) {
+        // 회원 인증 성공
+        const cookie = await cookies()
+        cookie.set('token', result.data, {
+          httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+          path: '/',
         })
-
-        const result = await res.json()
-
-        if(res.status === 200 && result.success) { // 인증 성공
-          const cookie = await cookies();
-          cookie.set("token", result.data,{
-            httpOnly: true,
-            sameSite: 'none',
-            secure: true,
-            path: '/'
-          })
-        } else{ // 인증 실패
-          errors = result.message;
-          hasErrors = true;
-        }
-
-      } catch(err){
-        console.error(err)
+      } else {
+        // 회원 인증 실패
+        errors = result.message
+        hasErrors = true
       }
+    } catch (err) {
+      console.error(err)
     }
+  }
   // 서버 요청 처리 E
-  if(hasErrors){
+
+  if (hasErrors) {
     return errors
   }
 
+  // 캐시 비우기
   revalidatePath('/', 'layout')
-  
-  redirect(redirectUrl)
+
+  // 로그인 성공시 이동
+  redirect(redirectUrl, RedirectType.replace)
 }
 
-// 로그인 회원 정보 조회
-export const getUserInfo = async () =>{
+/**
+ * 로그인한 회원 정보를 조회
+ *
+ */
+export const getUserInfo = async () => {
   const cookie = await cookies()
-  if (!cookie.has("token")) return
-  try{
+  if (!cookie.has('token')) return
+
+  try {
     const res = await apiRequest('/member')
-    if (res.status === 200 ){
+    if (res.status === 200) {
       const result = await res.json()
       return result.success && result.data
-    } 
-  } catch(err){
+    }
+  } catch (err) {
     console.error(err)
   }
 }

@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "server": "pm2 start ecosystem.config.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -13,11 +14,13 @@
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "next": "15.1.6",
+    "pm2": "^5.4.3",
     "react": "^19.0.0",
     "react-datepicker": "^8.0.0",
     "react-dom": "^19.0.0",
     "react-helmet-async": "^2.0.5",
     "react-icons": "^5.4.0",
+    "react-quill-new": "^3.3.3",
     "sass": "^1.83.4",
     "styled-components": "^6.1.14"
   },

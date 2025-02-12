@@ -11,14 +11,14 @@ const { dark } = colors
 
 const _MainTitle = ({ children, className }) => {
   const {
-    actions:{ setTitle },
+    actions: { setTitle },
   } = useContext(CommonContext)
 
-  useLayoutEffect(()=>{
+  useLayoutEffect(() => {
     setTitle(children)
   }, [children, setTitle])
 
-  return <h1 className={ className }>{ children }</h1> // children - title
+  return <h1 className={className}>{children}</h1>
 }
 
 export const MainTitle = styled(_MainTitle)`
@@ -26,5 +26,5 @@ export const MainTitle = styled(_MainTitle)`
   margin: 0 0 25px;
   font-size: ${big};
   border-bottom: 2px solid ${dark};
-  color: ${dark}
+  color: ${dark};
 `

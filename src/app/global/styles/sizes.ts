@@ -7,4 +7,4 @@ const sizes = {
   extra: '2rem',
 }
 
-export default sizes;
+export default sizes

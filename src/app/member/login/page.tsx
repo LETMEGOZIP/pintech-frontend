@@ -6,7 +6,7 @@ const LoginPage = () => {
 
   return (
     <MainContentBox>
-      <MainTitle>로그인</MainTitle>
+      <h1>로그인</h1>
       <LoginContainer></LoginContainer>
     </MainContentBox>
   )
